@@ -1,0 +1,340 @@
+<!doctype html>
+<html class="h-full overflow-y-scroll">
+<head>
+    <link rel="icon" href="data:,">
+    <title>Podpora - Alpaka</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Aplikace pro fakturaci a daňovou evidenci."/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+</head>
+<body class="min-h-screen w-full m-0 flex flex-col bg-white text-[#171717]">
+    
+    <header class="flex h-20 items-center bg-white px-6 w-full text-black">
+  <div class="mx-auto w-full max-w-7xl flex items-center justify-between">
+    <nav aria-label="Main navigation" class="flex w-full items-center justify-between gap-6 text-[14px] font-medium">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center">
+          <span class="font-bold text-[22px] tracking-tight">Alpaka</span>
+        </a>
+      </div>
+            <div class="hidden items-center gap-6 md:flex text-neutral-500 relative z-50">
+        
+        <!-- Produkty Dropdown -->
+        <div class="group relative">
+          <button class="flex items-center gap-1.5 hover:text-black transition-colors outline-none py-2">
+            Produkty
+            <svg class="w-3 h-3 text-neutral-400 group-hover:text-black transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-1 group-hover:translate-y-0">
+            <div class="w-48 rounded-2xl bg-white border border-neutral-200 shadow-sm flex flex-col overflow-hidden p-1.5">
+              <a href="faktury.html" class="px-4 py-2 rounded-xl hover:bg-neutral-50 text-neutral-900 transition-colors font-medium">
+                Aplikace Faktury
+              </a>
+              <a href="danovka.html" class="px-4 py-2 rounded-xl hover:bg-neutral-50 text-neutral-900 transition-colors font-medium">
+                Daňová evidence
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a href="blog.html" class="hover:text-black transition-colors py-2">Blog</a>
+        <a href="podpora.html" class="hover:text-black transition-colors py-2">Podpora</a>
+        <a href="cenik.html" class="ml-2 inline-flex h-9 items-center justify-center rounded-[14px] bg-neutral-900 px-5 text-[14px] font-medium text-white hover:bg-black transition-colors">Ceník a licence</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+    <!-- Scroll Indicator -->
+    <div id="scroll-indicator" class="fixed left-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-50 opacity-40 hidden xl:flex"></div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const sections = Array.from(document.querySelectorAll('h2, h3.text-xl, section[id]')).filter(el => {
+            // Jen elementy s nějakým rozumným odsazením odshora (hlavní sekce)
+            return el.offsetTop > 0;
+        });
+        
+        const validSections = [];
+        sections.forEach((sec, index) => {
+           if (validSections.length > 0 && Math.abs(sec.offsetTop - validSections[validSections.length-1].offsetTop) < 300) return;
+           if (!sec.id) sec.id = 'scroll-sec-' + index;
+           validSections.push(sec);
+        });
+
+        const indicatorContainer = document.getElementById('scroll-indicator');
+        if (!indicatorContainer || validSections.length < 2) {
+            if(indicatorContainer) indicatorContainer.style.display = 'none';
+            return;
+        }
+
+        validSections.forEach((sec, i) => {
+          const dot = document.createElement('a');
+          dot.href = '#' + sec.id;
+          dot.className = 'w-3 h-[2px] rounded-full transition-colors duration-300 indicator-dot ' + (i === 0 ? 'bg-neutral-500' : 'bg-neutral-200');
+          dot.setAttribute('data-target', sec.id);
+          dot.addEventListener('mouseenter', () => { if(!dot.classList.contains('bg-neutral-500')) dot.classList.replace('bg-neutral-200', 'bg-neutral-400'); });
+          dot.addEventListener('mouseleave', () => { if(!dot.classList.contains('bg-neutral-500')) dot.classList.replace('bg-neutral-400', 'bg-neutral-200'); });
+          indicatorContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.indicator-dot');
+        
+        function updateIndicator() {
+          let currentSectionId = validSections[0].id;
+          const scrollY = window.scrollY;
+          
+          validSections.forEach(section => {
+            const sectionTop = section.offsetTop - 150;
+            if (scrollY >= sectionTop) {
+              currentSectionId = section.id;
+            }
+          });
+
+          if ((window.innerHeight + scrollY) >= document.body.offsetHeight - 50) {
+              currentSectionId = validSections[validSections.length - 1].id;
+          }
+
+          dots.forEach(dot => {
+            if (dot.getAttribute('data-target') === currentSectionId) {
+              dot.classList.remove('bg-neutral-200', 'bg-neutral-400');
+              dot.classList.add('bg-neutral-500');
+            } else {
+              dot.classList.remove('bg-neutral-500', 'bg-neutral-400');
+              dot.classList.add('bg-neutral-200');
+            }
+          });
+        }
+        window.addEventListener('scroll', updateIndicator, { passive: true });
+        // Initial call
+        setTimeout(updateIndicator, 100);
+      });
+    </script>
+
+
+    
+
+    
+<main class="mx-auto flex w-full max-w-7xl flex-col px-6 py-12 md:py-20 flex-1">
+  <section class="flex flex-col w-full max-w-3xl mx-auto">
+    <div class="mb-16">
+      <h1 class="text-xl font-medium tracking-tight">
+        <a href="index.html" class="text-neutral-400 hover:text-neutral-600 transition-colors">Alpaka</a>
+        <span class="text-neutral-300 mx-1.5">/</span>
+        <span class="text-neutral-900">Aplikace Faktury</span>
+      </h1>
+    </div>
+    <div class="flex flex-col space-y-16">
+      
+      <!-- Úvodní popis -->
+      <div>
+        <div class="flex items-center gap-4 md:gap-6 mb-4 md:mb-6">
+          <img src="maskot.svg" alt="Maskot Alpaka" class="w-16 h-16 md:w-20 md:h-20 object-contain -rotate-6 select-none pointer-events-none shrink-0" />
+          <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900 leading-tight">
+            Všechno, co potřebujete<br class="hidden md:block"> k fakturaci. A nic navíc.
+          </h2>
+        </div>
+        <p class="text-lg text-neutral-500 leading-relaxed max-w-2xl">
+          Desktopová aplikace pro Mac a Windows, která nevymýšlí složitosti. Vystavení faktury trvá pár vteřin, PDF je vždy bezchybné a reprezentativní a veškerá vaše finanční data zůstávají bezpečně lokálně u vás na disku.
+        </p>
+      </div>
+
+      <hr class="border-neutral-100">
+      <!-- AI Chat Section (Narrow) -->
+      <div class="space-y-6">
+        <h3 class="text-xl font-medium tracking-tight text-neutral-900">Lokální AI přímo v aplikaci</h3>
+        <p class="text-[15px] text-neutral-500 leading-relaxed">
+          Už žádné zdlouhavé vyplňování formulářů. Vaše data nikam neodcházejí — vše běží lokálně u vás na disku. Novou fakturu vystavíte přirozeným rozhovorem.
+        </p>
+        <style>
+          @keyframes chatPop {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+          .animate-chat-1 { animation: chatPop 0.4s ease-out 0.5s both; }
+          .animate-chat-2 { animation: chatPop 0.4s ease-out 1.5s both; }
+          .animate-chat-3 { animation: chatPop 0.4s ease-out 2.5s both; }
+          .animate-chat-4 { animation: chatPop 0.4s ease-out 3.5s both; }
+        </style>
+        <div class="flex flex-col gap-4 text-[15px] mt-8 w-full">
+          <!-- AI msg -->
+          <div class="flex gap-4 animate-chat-1">
+            <div class="bg-neutral-100 px-4 py-3 rounded-2xl rounded-tl-sm text-neutral-800">
+              Dobrý den! Jsem váš chytrý pomocník. Co si přejete?
+            </div>
+          </div>
+          <!-- User msg -->
+          <div class="flex gap-4 flex-row-reverse animate-chat-2">
+            <div class="bg-neutral-900 px-4 py-3 rounded-2xl rounded-tr-sm text-white shadow-sm">
+              nová faktura pro ičo 27074358
+            </div>
+          </div>
+          <!-- AI msg -->
+          <div class="flex gap-4 animate-chat-3">
+            <div class="bg-neutral-100 px-4 py-3 rounded-2xl rounded-tl-sm text-neutral-800 leading-relaxed">
+              Načteno z ARESu: <strong class="font-semibold text-neutral-900">Alza.cz a.s.</strong><br>
+              <span class="text-neutral-500">Jankovcova 1522/53, 170 00 Praha 7</span><br><br>
+              Co a za kolik? Pište přirozeně, např: "Vývoj webu 15 000 Kč"
+            </div>
+          </div>
+          <!-- User msg -->
+          <div class="flex gap-4 flex-row-reverse animate-chat-4">
+            <div class="bg-neutral-900 px-4 py-3 rounded-2xl rounded-tr-sm text-white shadow-sm">
+              Konzultace 3h × 800 Kč/h, DPH 21%
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-neutral-100">
+      <!-- Agendy (Zpět k čistému stylu webu) -->
+      <section class="flex flex-col w-full max-w-xl mx-auto mt-8 mb-16">
+        <h3 class="text-xl font-semibold mb-4 text-neutral-900">Všechny agendy pohromadě</h3>
+        <p class="text-sm leading-relaxed mb-10 text-neutral-500">
+          Faktury nejsou všechno. Aplikace funguje jako ucelený systém, který sjednotí veškerou vaši agendu od prvního kontaktu s klientem přes cenovou nabídku až po zaplacenou zálohu.
+        </p>
+
+        <!-- Clean Tags/Pills Layout -->
+        <div class="flex flex-wrap gap-3">
+          <div class="flex items-center gap-3 px-5 py-3 bg-neutral-100 rounded-[14px]">
+            <svg class="w-5 h-5 text-neutral-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+            <span class="text-[15px] font-medium text-neutral-900">Faktury</span>
+          </div>
+          <div class="flex items-center gap-3 px-5 py-3 bg-white border border-neutral-200 rounded-[14px] hover:bg-neutral-50 transition-colors cursor-default">
+            <svg class="w-5 h-5 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            <span class="text-[15px] font-medium text-neutral-700">Zálohy</span>
+          </div>
+          <div class="flex items-center gap-3 px-5 py-3 bg-white border border-neutral-200 rounded-[14px] hover:bg-neutral-50 transition-colors cursor-default">
+            <svg class="w-5 h-5 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <span class="text-[15px] font-medium text-neutral-700">Nabídky</span>
+          </div>
+          <div class="flex items-center gap-3 px-5 py-3 bg-white border border-neutral-200 rounded-[14px] hover:bg-neutral-50 transition-colors cursor-default">
+            <svg class="w-5 h-5 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <span class="text-[15px] font-medium text-neutral-700">Klienti</span>
+          </div>
+          <div class="flex items-center gap-3 px-5 py-3 bg-white border border-neutral-200 rounded-[14px] hover:bg-neutral-50 transition-colors cursor-default">
+            <svg class="w-5 h-5 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+            <span class="text-[15px] font-medium text-neutral-700">Projekty</span>
+          </div>
+        </div>
+      </section>
+
+      <hr class="border-neutral-100">
+
+      <!-- Sdílení Banner (Jen email) -->
+      <div class="relative z-0 mt-16 md:mt-24">
+        <!-- Vykukující maskot, umístěn absolutně vůči rodiči -->
+        <img src="maskot.svg" alt="Maskot Alpaka" class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 md:w-40 md:h-40 object-contain rotate-[-2deg] -z-10 pointer-events-none select-none" />
+        
+        <!-- Samotný černý banner posunutý dolů, aby nechal vykouknout maskota -->
+        <div class="bg-neutral-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm relative z-10 mt-20 md:mt-28">
+          <div class="flex flex-col gap-2 w-full sm:w-2/3">
+            <h3 class="text-xl font-medium tracking-tight">Odeslání na jeden klik</h3>
+            <p class="text-[14px] text-neutral-400 leading-relaxed">
+              Vyberte doklady a sdílejte je. Aplikace automaticky otevře váš e-mail, 
+              předvyplní text a do přílohy vloží PDF i vygenerovaný formát <strong>IS/DOC</strong>.
+            </p>
+          </div>
+          <div class="hidden sm:flex w-16 h-16 bg-neutral-800 rounded-full items-center justify-center shrink-0">
+            <svg class="w-6 h-6 text-neutral-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-neutral-100">
+
+      <!-- Chytrý labeling v samostatné sekci (čistý layout s animací) -->
+      <style>
+        @keyframes labelShake {
+          0%, 100% { transform: rotate(0deg); }
+          2%, 6%, 10% { transform: rotate(6deg); }
+          4%, 8% { transform: rotate(-6deg); }
+          12% { transform: rotate(0deg); }
+        }
+        .animate-label-shake {
+          animation: labelShake 8s ease-in-out infinite;
+          transform-origin: center center;
+        }
+      </style>
+      <div class="space-y-6">
+        <h3 class="text-xl font-medium tracking-tight text-neutral-900">Chytrý labeling</h3>
+        <p class="text-[15px] text-neutral-500 leading-relaxed">
+          Mějte na první pohled jasno, jaký je stav vašich financí. Značky, které znáte z aplikace, vám rovnou vizuálně napoví bez zbytečného klikání.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-4 pt-2">
+          <span class="inline-flex items-center justify-center px-4 py-2 rounded-[14px] font-medium text-[16px] tracking-wide" style="background-color: #f3e8ff; color: #6b21a8;">
+            Zaplaceno
+          </span>
+          <span class="inline-flex items-center justify-center px-4 py-2 rounded-[14px] font-medium text-[16px] tracking-wide animate-label-shake" style="background-color: #fce7f3; color: #be185d;">
+            Po splatnosti
+          </span>
+          <span class="inline-flex items-center justify-center px-4 py-2 rounded-[14px] font-medium text-[16px] tracking-wide" style="background-color: #fae8ff; color: #86198f;">
+            Nezaplaceno
+          </span>
+        </div>
+      </div>
+
+      <hr class="border-neutral-100">
+
+      <!-- Aktualizace & Podpora (Narrow) -->
+      <div class="space-y-6">
+        <h3 class="text-xl font-medium tracking-tight text-neutral-900">Aplikace, která se o sebe stará</h3>
+        <p class="text-[15px] text-neutral-500 leading-relaxed">
+          V ceně jsou zahrnuty veškeré <strong>hotfixy i zásadní aktualizace</strong> aplikace. Nemusíte nic hlídat ani doplácet za nové verze.
+        </p>
+        <p class="text-[15px] text-neutral-500 leading-relaxed">
+          Aplikace je navržena nadčasově, takže nevyžaduje pravidelné legislativní aktualizace. Pokud by se však zákonné náležitosti zásadně změnily, budeme situaci řešit v moment, kdy to nastane. O stahování vylepšení se nemusíte starat – aplikace si <strong>aktualizace bere automaticky</strong> na pozadí.
+        </p>
+      </div>
+
+      <!-- Tlačítko akce -->
+      <div class="pt-8 pb-8">
+        <a href="cenik.html" class="inline-flex h-11 items-center justify-center rounded-[14px] bg-neutral-900 px-8 text-[15px] font-medium text-white hover:bg-black transition-colors">
+          Zobrazit ceník a zakoupit
+        </a>
+      </div>
+
+    </div>
+  </section>
+</main>
+        
+
+    <footer class="mt-auto px-6 py-8 border-t border-neutral-200">
+  <div class="mx-auto w-full max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6">
+    
+    <div class="flex flex-wrap items-center justify-center md:justify-start gap-x-8 gap-y-2 text-xs text-neutral-500">
+      <span>&copy; 2026 Alpaka.</span>
+      <div class="flex gap-6">
+        <a href="soukromi.html" class="hover:text-neutral-900 transition-colors">Soukromí</a>
+        <a href="podminky.html" class="hover:text-neutral-900 transition-colors">Podmínky</a>
+        <a href="#github" class="hover:text-neutral-900 transition-colors">GitHub</a>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-6 text-xs text-neutral-500">
+      <span>Vytvořeno s láskou pro podnikatele.</span>
+      <div class="relative inline-block">
+        <select class="appearance-none bg-transparent pr-4 pl-1 hover:text-neutral-900 transition-colors outline-none cursor-pointer">
+          <option value="cs">Čeština</option>
+          <option value="sk">Slovenčina</option>
+          <option value="en">English</option>
+        </select>
+        <svg class="w-3 h-3 absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+      </div>
+    </div>
+
+  </div>
+</footer>
+</body>
+</html>

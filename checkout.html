@@ -1,0 +1,69 @@
+<!doctype html>
+<html class="h-full overflow-y-scroll">
+<head>
+    <link rel="icon" href="data:,">
+    <title>Alpaka — Přesměrování na platbu</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Dokončení nákupu aplikace Alpaka."/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+</head>
+<body class="min-h-screen w-full m-0 flex flex-col bg-white text-[#171717] items-center justify-center p-6">
+
+    <main class="w-full max-w-xl flex flex-col items-center justify-center text-center">
+      
+      <!-- Animovaný točící se maskot -->
+      <div class="mb-8">
+        <img src="maskot.svg" alt="Načítání..." class="w-20 h-20 md:w-24 md:h-24 object-contain animate-[spin_6s_linear_infinite] select-none pointer-events-none" />
+      </div>
+
+      <h1 class="text-2xl md:text-3xl font-semibold tracking-tight text-neutral-900 mb-4 leading-tight">
+        Připravujeme platbu...
+      </h1>
+      <p class="text-[15px] md:text-[16px] text-neutral-500 leading-relaxed max-w-lg mx-auto mb-10">
+        Nyní vás bezpečně přesměrujeme na platební bránu Stripe pro dokončení nákupu. Po zaplacení obdržíte obratem na e-mail licenční kód a odkaz ke stažení aplikace.
+      </p>
+
+      <div class="flex flex-col items-center gap-5">
+        <button id="checkout-btn" onclick="redirectToStripe()" class="inline-flex h-11 items-center justify-center rounded-[12px] bg-neutral-900 px-8 text-[14px] font-medium text-white hover:bg-black transition-colors shrink-0">
+          Pokračovat k platbě (<span id="countdown">7</span>s)
+        </button>
+        <a href="javascript:history.back()" class="text-[14px] font-medium text-neutral-500 hover:text-neutral-900 transition-colors">
+          Zpět
+        </a>
+      </div>
+
+    </main>
+
+<script>
+  let seconds = 7;
+  const countdownEl = document.getElementById('countdown');
+  // Zde přijde link na reálný Stripe checkout
+  const STRIPE_URL = 'https://stripe.com'; 
+
+  function redirectToStripe() {
+    window.location.href = STRIPE_URL;
+  }
+
+  const interval = setInterval(() => {
+    seconds--;
+    if (countdownEl) countdownEl.innerText = seconds;
+    
+    if (seconds <= 0) {
+      clearInterval(interval);
+      redirectToStripe();
+    }
+  }, 1000);
+</script>
+
+</body>
+</html>

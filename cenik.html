@@ -1,0 +1,398 @@
+<!doctype html>
+<html class="h-full overflow-y-scroll">
+<head>
+    <link rel="icon" href="data:,">
+    <title>Ceník - Alpaka</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Aplikace pro fakturaci a daňovou evidenci."/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+</head>
+<body class="min-h-screen w-full m-0 flex flex-col bg-white text-[#171717]">
+    
+    <header class="flex h-20 items-center bg-white px-6 w-full text-black">
+  <div class="mx-auto w-full max-w-7xl flex items-center justify-between">
+    <nav aria-label="Main navigation" class="flex w-full items-center justify-between gap-6 text-[14px] font-medium">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center">
+          <span class="font-bold text-[22px] tracking-tight">Alpaka</span>
+        </a>
+      </div>
+            <div class="hidden items-center gap-6 md:flex text-neutral-500 relative z-50">
+        
+        <!-- Produkty Dropdown -->
+        <div class="group relative">
+          <button class="flex items-center gap-1.5 hover:text-black transition-colors outline-none py-2">
+            Produkty
+            <svg class="w-3 h-3 text-neutral-400 group-hover:text-black transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+          </button>
+          
+          <!-- Dropdown Menu -->
+          <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-1 group-hover:translate-y-0">
+            <div class="w-48 rounded-2xl bg-white border border-neutral-200 shadow-sm flex flex-col overflow-hidden p-1.5">
+              <a href="faktury.html" class="px-4 py-2 rounded-xl hover:bg-neutral-50 text-neutral-900 transition-colors font-medium">
+                Aplikace Faktury
+              </a>
+              <a href="danovka.html" class="px-4 py-2 rounded-xl hover:bg-neutral-50 text-neutral-900 transition-colors font-medium">
+                Daňová evidence
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <a href="blog.html" class="hover:text-black transition-colors py-2">Blog</a>
+        <a href="podpora.html" class="hover:text-black transition-colors py-2">Podpora</a>
+        <a href="cenik.html" class="ml-2 inline-flex h-9 items-center justify-center rounded-[14px] bg-neutral-900 px-5 text-[14px] font-medium text-white hover:bg-black transition-colors">Ceník a licence</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+    <!-- Scroll Indicator -->
+    <div id="scroll-indicator" class="fixed left-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-50 opacity-40 hidden xl:flex"></div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const sections = Array.from(document.querySelectorAll('h2, h3.text-xl, section[id]')).filter(el => {
+            // Jen elementy s nějakým rozumným odsazením odshora (hlavní sekce)
+            return el.offsetTop > 0;
+        });
+        
+        const validSections = [];
+        sections.forEach((sec, index) => {
+           if (validSections.length > 0 && Math.abs(sec.offsetTop - validSections[validSections.length-1].offsetTop) < 300) return;
+           if (!sec.id) sec.id = 'scroll-sec-' + index;
+           validSections.push(sec);
+        });
+
+        const indicatorContainer = document.getElementById('scroll-indicator');
+        if (!indicatorContainer || validSections.length < 2) {
+            if(indicatorContainer) indicatorContainer.style.display = 'none';
+            return;
+        }
+
+        validSections.forEach((sec, i) => {
+          const dot = document.createElement('a');
+          dot.href = '#' + sec.id;
+          dot.className = 'w-3 h-[2px] rounded-full transition-colors duration-300 indicator-dot ' + (i === 0 ? 'bg-neutral-500' : 'bg-neutral-200');
+          dot.setAttribute('data-target', sec.id);
+          dot.addEventListener('mouseenter', () => { if(!dot.classList.contains('bg-neutral-500')) dot.classList.replace('bg-neutral-200', 'bg-neutral-400'); });
+          dot.addEventListener('mouseleave', () => { if(!dot.classList.contains('bg-neutral-500')) dot.classList.replace('bg-neutral-400', 'bg-neutral-200'); });
+          indicatorContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.indicator-dot');
+        
+        function updateIndicator() {
+          let currentSectionId = validSections[0].id;
+          const scrollY = window.scrollY;
+          
+          validSections.forEach(section => {
+            const sectionTop = section.offsetTop - 150;
+            if (scrollY >= sectionTop) {
+              currentSectionId = section.id;
+            }
+          });
+
+          if ((window.innerHeight + scrollY) >= document.body.offsetHeight - 50) {
+              currentSectionId = validSections[validSections.length - 1].id;
+          }
+
+          dots.forEach(dot => {
+            if (dot.getAttribute('data-target') === currentSectionId) {
+              dot.classList.remove('bg-neutral-200', 'bg-neutral-400');
+              dot.classList.add('bg-neutral-500');
+            } else {
+              dot.classList.remove('bg-neutral-500', 'bg-neutral-400');
+              dot.classList.add('bg-neutral-200');
+            }
+          });
+        }
+        window.addEventListener('scroll', updateIndicator, { passive: true });
+        // Initial call
+        setTimeout(updateIndicator, 100);
+      });
+    </script>
+
+
+    
+
+
+    
+
+    
+<main class="mx-auto flex w-full max-w-7xl flex-col px-6 py-12 md:py-20">
+  <div class="w-full max-w-5xl mx-auto mb-16" id="ceny" style="scroll-margin-top: 6rem;">
+    <h1 class="text-xl font-medium tracking-tight">
+      <a href="index.html" class="text-neutral-400 hover:text-neutral-600 transition-colors">Alpaka</a>
+      <span class="text-neutral-300 mx-1.5">/</span>
+      <span class="text-neutral-900">Ceník</span>
+    </h1>
+  </div>
+
+  <section id="karty" class="mb-12 scroll-mt-24">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
+
+      <!-- Card 2: Faktury -->
+      <div class="flex flex-col border border-neutral-200 rounded-2xl p-6 relative bg-white h-full">
+        <div>
+          <div class="flex h-9 items-center">
+            <h2 class="text-xl font-medium">Faktury</h2>
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <div class="text-3xl font-semibold font-rounded">490 Kč</div>
+            <div class="text-[11px] text-neutral-400 uppercase tracking-wider font-medium">/ doživotní licence</div>
+          </div>
+          <p class="mt-4 min-h-8 text-xs text-neutral-500">Základní nástroj pro živnostníky pro rychlé vystavování faktur.</p>
+        </div>
+        <p class="mt-6 text-sm text-neutral-500 mb-4">Hlavní funkce:</p>
+        <ul class="flex-1 space-y-3">
+          <li class="text-sm flex items-start gap-2">
+            <svg class="w-4 h-4 text-black flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            <span>Trvalá fixní licence</span>
+          </li>
+          <li class="text-sm flex items-start gap-2">
+            <svg class="w-4 h-4 text-black flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            <span>Neomezený počet faktur</span>
+          </li>
+          <li class="text-sm flex items-start gap-2">
+            <svg class="w-4 h-4 text-black flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            <span>Načítání firem z ARES</span>
+          </li>
+          <li class="text-sm flex items-start gap-2">
+            <svg class="w-4 h-4 text-black flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            <span>Export do PDF</span>
+          </li>
+        </ul>
+        <div class="mt-8">
+          <a href="checkout.html" class="inline-flex items-center justify-center rounded-[14px] bg-neutral-900 text-white hover:bg-black font-medium text-sm px-5 py-2 transition-colors">Zakoupit Faktury</a>
+        </div>
+      </div>
+
+      <!-- Card 3: Daňovka -->
+      <div class="relative flex flex-col h-full z-0">
+        <!-- Vykukující maskot za kartou (posunutý výš, aby byly vidět oči) -->
+        <img src="maskot.svg" alt="Maskot Alpaka" class="absolute -top-28 md:-top-32 left-1/2 -translate-x-1/2 w-40 h-40 md:w-48 md:h-48 object-contain rotate-6 -z-10 pointer-events-none" />
+        
+        <div class="flex flex-col border border-neutral-200 rounded-2xl p-6 relative bg-white h-full shadow-sm">
+          <div>
+            <div class="flex h-9 items-center justify-between gap-2">
+              <h2 class="text-xl font-medium">Daňovka</h2>
+              <div class="inline-flex gap-1 rounded-full bg-black/5 px-2.5 py-1 text-[11px] font-semibold text-neutral-600">
+                Připravujeme
+              </div>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <div class="text-3xl font-semibold font-rounded">990 Kč</div>
+              <div class="text-[11px] text-neutral-400 uppercase tracking-wider font-medium">/ doživotní licence</div>
+            </div>
+            <p class="mt-4 min-h-8 text-xs text-neutral-500">Pro ty, kteří si dělají daně sami a chtějí mít vše v naprostém pořádku.</p>
+          </div>
+          <p class="mt-6 text-sm text-neutral-500 mb-4">Vše ve Fakturách, plus:</p>
+          <ul class="flex-1 space-y-3">
+            <li class="text-sm flex items-start gap-2">
+              <svg class="w-4 h-4 text-black flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+              <span>Kompletní daňová evidence</span>
+            </li>
+            <li class="text-sm flex items-start gap-2">
+              <svg class="w-4 h-4 text-black flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+              <span>Přiznání k DPH a Kontrolní hlášení</span>
+            </li>
+            <li class="text-sm flex items-start gap-2">
+              <svg class="w-4 h-4 text-black flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+              <span>Podání datovou schránkou</span>
+            </li>
+          </ul>
+          <div class="mt-8">
+            <div class="inline-flex items-center justify-center rounded-[14px] bg-neutral-100 text-neutral-400 font-medium text-sm px-5 py-2 cursor-not-allowed">
+              Zatím nedostupné
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Více licencí -->
+      <div class="flex flex-col border border-neutral-200 rounded-2xl p-6 relative bg-white h-full">
+        <div>
+          <div class="flex h-9 items-center">
+            <h2 class="text-xl font-medium">Více licencí</h2>
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <div class="text-3xl font-semibold font-rounded">Na míru</div>
+            <div class="text-[11px] text-neutral-400 uppercase tracking-wider font-medium opacity-0">Neviditelne</div>
+          </div>
+          <p class="mt-4 min-h-8 text-xs text-neutral-500">Pro firmy a účetní kanceláře s potřebou sítě a více uživatelů.</p>
+        </div>
+        <p class="mt-6 text-sm text-neutral-500 mb-4">Vše v Daňovce, plus:</p>
+        <ul class="flex-1 space-y-3">
+          <li class="text-sm flex items-start gap-2">
+            <svg class="w-4 h-4 text-black flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            <span>Množstevní slevy na licence</span>
+          </li>
+          <li class="text-sm flex items-start gap-2">
+            <svg class="w-4 h-4 text-black flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            <span>Síťová instalace pro více PC</span>
+          </li>
+          <li class="text-sm flex items-start gap-2">
+            <svg class="w-4 h-4 text-black flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            <span>Prioritní technická podpora</span>
+          </li>
+        </ul>
+        <div class="mt-8">
+          <a href="#" class="inline-flex items-center justify-center rounded-[14px] bg-white border border-neutral-200 text-neutral-900 hover:bg-neutral-50 font-medium text-sm px-5 py-2 transition-colors">Kontaktovat</a>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="mt-10 text-center max-w-lg mx-auto">
+      <p class="text-[14px] text-neutral-400">
+        Nechcete zatím kupovat zajíce v pytli? <a href="#" class="underline hover:text-neutral-600 transition-colors">Stáhněte si bezplatnou demo verzi</a>.
+      </p>
+    </div>
+
+  </section>
+
+  <!-- Table Section EXACTLY like template -->
+      <section id="model-pricing" class="flex flex-col w-full max-w-xl mx-auto mt-16 scroll-mt-24">
+    <h2 class="text-2xl font-semibold mb-3">Detailní srovnání funkcí</h2>
+    <p class="text-sm text-neutral-500 mb-6">Porovnejte si detailně možnosti jednotlivých verzí. Ceny jsou konečné a licence je časově neomezená.</p>
+    
+    <div class="overflow-x-auto rounded-2xl border border-neutral-200 mb-6">
+      <table class="w-full text-sm border-separate border-spacing-0">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th class="px-4 py-3 text-left font-semibold text-neutral-900 w-1/2">Funkce</th>
+            <th class="border-l border-neutral-200 px-4 py-3 text-center font-semibold text-neutral-900 w-1/4">Faktury</th>
+            <th class="border-l border-neutral-200 px-4 py-3 text-center font-semibold text-neutral-900 w-1/4">Daňovka</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="hover:bg-neutral-50">
+            <td class="border-t border-neutral-200 px-4 py-3 text-neutral-900 font-medium">Neomezené vystavování faktur</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+          </tr>
+          <tr class="hover:bg-neutral-50">
+            <td class="border-t border-neutral-200 px-4 py-3 text-neutral-900 font-medium">Automatické doplňování z ARESu</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+          </tr>
+          <tr class="hover:bg-neutral-50">
+            <td class="border-t border-neutral-200 px-4 py-3 text-neutral-900 font-medium">QR platby a propojení s bankou</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+          </tr>
+          <tr class="hover:bg-neutral-50">
+            <td class="border-t border-neutral-200 px-4 py-3 text-neutral-900 font-medium">Hromadné rozesílání e-mailem</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+          </tr>
+          <tr class="hover:bg-neutral-50">
+            <td class="border-t border-neutral-200 px-4 py-3 text-neutral-900 font-medium">Kompletní daňová evidence</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-400">Ne</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+          </tr>
+          <tr class="hover:bg-neutral-50">
+            <td class="border-t border-neutral-200 px-4 py-3 text-neutral-900 font-medium">Přiznání k dani z příjmů</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-400">Ne</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+          </tr>
+          <tr class="hover:bg-neutral-50">
+            <td class="border-t border-neutral-200 px-4 py-3 text-neutral-900 font-medium">Přiznání k DPH a kontrolní hlášení</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-400">Ne</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+          </tr>
+          <tr class="hover:bg-neutral-50">
+            <td class="border-t border-neutral-200 px-4 py-3 text-neutral-900 font-medium">Kniha jízd a cestovní náhrady</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-400">Ne</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+          </tr>
+          <tr class="hover:bg-neutral-50">
+            <td class="border-t border-neutral-200 px-4 py-3 text-neutral-900 font-medium">Multiplatformní aplikace (Mac + PC)</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+            <td class="border-l border-t border-neutral-200 px-4 py-3 text-center text-neutral-900">Ano</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FAQ Section EXACTLY like template -->
+  <section id="faq" class="flex flex-col w-full max-w-xl mx-auto mt-8 scroll-mt-24">
+    <h2 class="text-2xl font-semibold mb-6">Často kladené dotazy</h2>
+    <div class="space-y-10">
+      
+      <div>
+        <h3 class="text-xl font-semibold mb-4">Licence a platby</h3>
+        <ul class="space-y-5">
+          <li>
+            <h4 class="text-base font-semibold mb-1">Je licence opravdu jednorázová a bez dalších poplatků?</h4>
+            <p class="text-sm">Ano, za licenci na konkrétní ročník platíte pouze jednou. Nejsou zde žádné skryté měsíční ani roční poplatky. Při přechodu na nový rok si můžete zakoupit aktualizaci programu za výrazně zvýhodněnou cenu, není to ale povinné.</p>
+          </li>
+          <li>
+            <h4 class="text-base font-semibold mb-1">Jsou aktualizace v průběhu roku zdarma?</h4>
+            <p class="text-sm">Ano, veškeré legislativní aktualizace, novinky a opravy chyb vydané pro daný ročník jsou pro všechny držitele licence zcela zdarma. Aplikace vás na ně sama upozorní.</p>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold mb-4">Používání programu</h3>
+        <ul class="space-y-5">
+          <li>
+            <h4 class="text-base font-semibold mb-1">Mohu program používat na více počítačích?</h4>
+            <p class="text-sm">Základní licence je vázána na 1 konkrétní počítač. Pokud potřebujete program používat na více zařízeních, kontaktujte nás a nabídneme vám výhodné rozšíření licence na míru.</p>
+          </li>
+          <li>
+            <h4 class="text-base font-semibold mb-1">Funguje program i na Apple Mac (macOS)?</h4>
+            <p class="text-sm">Ano, Alpaka je plně multiplatformní. Nativně podporuje jak Windows, tak i macOS (včetně procesorů Apple Silicon). Můžete ji tak bez problému používat na svém MacBooku i stolním PC.</p>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+    
+    
+
+  </section>
+
+</main>
+        
+
+    <footer class="mt-auto px-6 py-8 border-t border-neutral-200">
+  <div class="mx-auto w-full max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6">
+    
+    <div class="flex flex-wrap items-center justify-center md:justify-start gap-x-8 gap-y-2 text-xs text-neutral-500">
+      <span>&copy; 2026 Alpaka.</span>
+      <div class="flex gap-6">
+        <a href="soukromi.html" class="hover:text-neutral-900 transition-colors">Soukromí</a>
+        <a href="podminky.html" class="hover:text-neutral-900 transition-colors">Podmínky</a>
+        <a href="#github" class="hover:text-neutral-900 transition-colors">GitHub</a>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-6 text-xs text-neutral-500">
+      <span>Vytvořeno s láskou pro podnikatele.</span>
+      <div class="relative inline-block">
+        <select class="appearance-none bg-transparent pr-4 pl-1 hover:text-neutral-900 transition-colors outline-none cursor-pointer">
+          <option value="cs">Čeština</option>
+          <option value="sk">Slovenčina</option>
+          <option value="en">English</option>
+        </select>
+        <svg class="w-3 h-3 absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+      </div>
+    </div>
+
+  </div>
+</footer>
+</body>
+</html>
