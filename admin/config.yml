@@ -1,0 +1,23 @@
+backend:
+  name: github
+  # DŮLEŽITÉ: Níže změň na svůj GitHub nick a název repozitáře (např. josefvejs/muj-web)
+  repo: josefvejs/web
+  branch: main # nebo master, podle toho, jakou větev máš na GitHubu
+  # Sveltia umí základní přihlášení na GitHub bez dalších složitostí
+
+media_folder: "assets/images/uploads"
+public_folder: "/assets/images/uploads"
+
+collections:
+  - name: "blog"
+    label: "Články na blog"
+    folder: "_posts" # Zde se budou ukládat hotové články ve formátu Markdown
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "Layout", name: "layout", widget: "hidden", default: "post"}
+      - {label: "Titulek", name: "title", widget: "string"}
+      - {label: "Datum", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false}
+      - {label: "Tagy", name: "tags", widget: "list", default: ["novinka"]}
+      - {label: "Krátký popisek (Perex)", name: "description", widget: "text"}
+      - {label: "Obsah článku", name: "body", widget: "markdown"}

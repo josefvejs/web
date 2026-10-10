@@ -1,8 +1,12 @@
+---
+layout: null
+permalink: /blog.html
+---
 <!doctype html>
 <html class="h-full overflow-y-scroll">
 <head>
     <link rel="icon" href="data:,">
-    <title>Blog - Alpaka</title>
+    <title>Blog - Marshmallow</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Novinky, tipy pro živnostníky a aktualizace našich aplikací."/>
@@ -24,7 +28,7 @@
     <nav aria-label="Main navigation" class="flex w-full items-center justify-between gap-6 text-[14px] font-medium">
       <div class="flex items-center gap-8">
         <a href="index.html" class="flex items-center">
-          <span class="font-bold text-[22px] tracking-tight">Alpaka</span>
+          <span class="font-semibold text-xl">Marshmallow</span>
         </a>
       </div>
 
@@ -160,75 +164,50 @@
         <!-- Breadcrumb Nadpis -->
         <div class="mb-16">
           <h1 class="text-xl font-medium tracking-tight">
-            <a href="index.html" class="text-neutral-400 hover:text-neutral-600 transition-colors">Alpaka</a>
+            <a href="index.html" class="text-neutral-400 hover:text-neutral-600 transition-colors">Marshmallow</a>
             <span class="text-neutral-300 mx-1.5">/</span>
             <span class="text-neutral-900">Blog</span>
           </h1>
         </div>
 
-        <div class="mb-16">
-          <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-neutral-900 mb-6 leading-tight">
-            Zprávy ze světa lokálního účetnictví.
-          </h2>
-          <p class="text-lg text-neutral-500 leading-relaxed max-w-2xl">
-            Novinky o aplikaci Alpaka, tipy pro daňovou evidenci a fakturaci a občasné zamyšlení nad tím, proč dává smysl mít svá data u sebe.
-          </p>
-        </div>
 
-        <!-- Čistý textový seznam článků - redakční layout -->
-        <div class="flex flex-col space-y-12">
 
-          <article class="group cursor-pointer">
-            <a href="clanek.html" class="block">
-              <div class="flex flex-col md:flex-row gap-2 md:gap-8 items-baseline">
-                <time class="text-[13px] text-neutral-400 md:w-32 shrink-0 tabular-nums font-medium">15. října 2026</time>
-                <div>
-                  <h3 class="text-[17px] font-semibold text-neutral-900 group-hover:text-neutral-500 transition-colors mb-2">Jak se připravit na daňové přiznání za rok 2026</h3>
-                  <p class="text-[14px] text-neutral-500 leading-relaxed">
-                    Konec roku se blíží a s ním i povinnost začít pomalu zúčtovat své příjmy. Připravili jsme pro vás shrnutí toho nejdůležitějšího, co byste jako živnostníci neměli opomenout.
-                  </p>
+        <!-- Dev-style výpis článků -->
+        <div class="flex flex-col mt-4">
+
+          {% for post in site.posts %}
+          <article class="group py-8 border-b border-neutral-100 last:border-0">
+            <a href="{{ post.url | relative_url }}" class="block">
+              <div class="flex flex-col gap-2.5">
+                
+                <div class="flex items-center gap-3 text-[13px] font-medium text-neutral-400 mb-1">
+                  <time>{{ post.date | date: "%Y-%m-%d" }}</time>
+                  <span class="text-neutral-200">/</span>
+                  <div class="flex gap-2.5">
+                    {% for tag in post.tags %}
+                    <span class="hover:text-neutral-700 transition-colors">#{{ tag }}</span>
+                    {% endfor %}
+                  </div>
                 </div>
+                
+                <h3 class="text-[17px] font-semibold text-neutral-900 group-hover:underline decoration-neutral-300 underline-offset-4 transition-all">
+                  {{ post.title }}
+                </h3>
+                
+                <p class="text-[14px] text-neutral-500 leading-relaxed max-w-2xl">
+                  {{ post.description }}
+                </p>
+                
               </div>
             </a>
           </article>
-
-          <hr class="border-neutral-100">
-
-          <article class="group cursor-pointer">
-            <a href="clanek.html" class="block">
-              <div class="flex flex-col md:flex-row gap-2 md:gap-8 items-baseline">
-                <time class="text-[13px] text-neutral-400 md:w-32 shrink-0 tabular-nums font-medium">2. září 2026</time>
-                <div>
-                  <h3 class="text-[17px] font-semibold text-neutral-900 group-hover:text-neutral-500 transition-colors mb-2">Vydali jsme novou aplikaci Daňovka</h3>
-                  <p class="text-[14px] text-neutral-500 leading-relaxed">
-                    Po dlouhých měsících vývoje konečně spouštíme do ostrého provozu naši aplikaci pro kompletní daňovou evidenci. Přečtěte si, jaké nové funkce přináší a jak usnadní podávání přiznání.
-                  </p>
-                </div>
-              </div>
-            </a>
-          </article>
-
-          <hr class="border-neutral-100">
-
-          <article class="group cursor-pointer">
-            <a href="clanek.html" class="block">
-              <div class="flex flex-col md:flex-row gap-2 md:gap-8 items-baseline">
-                <time class="text-[13px] text-neutral-400 md:w-32 shrink-0 tabular-nums font-medium">14. srpna 2026</time>
-                <div>
-                  <h3 class="text-[17px] font-semibold text-neutral-900 group-hover:text-neutral-500 transition-colors mb-2">Novinky v aplikaci Faktury: Vylepšené QR platby</h3>
-                  <p class="text-[14px] text-neutral-500 leading-relaxed">
-                    V posledním updatu jsme výrazně vylepšili spolehlivost generování QR kódů. Nově podporují i specifičtější formáty a automaticky se přizpůsobují vybrané měně na faktuře.
-                  </p>
-                </div>
-              </div>
-            </a>
-          </article>
+          {% endfor %}
 
         </div>
 
         <!-- Tlačítko další -->
-        <div class="mt-16 text-left md:pl-[10rem]">
-          <button class="inline-flex items-center justify-center rounded-[14px] border border-neutral-200 bg-white px-5 py-2 text-[13px] font-medium text-neutral-600 hover:bg-neutral-50 transition-colors">
+        <div class="mt-16 text-left">
+          <button class="inline-flex h-9 items-center justify-center rounded-[14px] border border-neutral-200 bg-white px-5 text-[14px] font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 transition-colors">
             Načíst starší články
           </button>
         </div>
@@ -241,7 +220,7 @@
   <div class="mx-auto w-full max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6">
     
     <div class="flex flex-wrap items-center justify-center md:justify-start gap-x-8 gap-y-2 text-xs text-neutral-500">
-      <span>&copy; 2026 Alpaka.</span>
+      <span>&copy; 2026 Marshmallow.</span>
       <div class="flex gap-6">
         <a href="soukromi.html" class="hover:text-neutral-900 transition-colors">Soukromí</a>
         <a href="podminky.html" class="hover:text-neutral-900 transition-colors">Podmínky</a>
